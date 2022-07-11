@@ -40,8 +40,8 @@
                 <th scope="col">ID</th>
                 <th scope="col">Username</th>
                 <th scope="col">Email</th>
-                <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
+                <th scope="col">Edit</th>
               </tr>
             </thead>
             <tbody>
@@ -61,17 +61,44 @@
                     <th><?php echo $user_id; ?></th>
                     <td><?php echo $user_name; ?></td>
                     <td><?php echo $user_email; ?></td>
-                    <td><a href="index.php?edit=<?php echo $user_id; ?>" class="btn btn-success btn-sm">Edit</a></td>
-                    <td><a href="index.php?del=<?php echo $user_id; ?>" class="btn btn-danger btn-sm">Delete</a></td>
+                    <!-- <td><a href="index.php?del=<?php echo $user_id; ?>" class="btn btn-danger btn-sm">Delete</a></td> -->
+                    <td>
+                        <form method="post" action="index.php">
+                            <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
+                            <input type="submit" name="remove" value="delete" class="btn btn-danger btn-sm">
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="edit-user.php">
+                            <input type="hidden" name="val" value="<?php echo $user_id; ?>">
+                            <input type="submit" name="edit" value="Edit" class="btn btn-success btn-sm">
+                        </form>
+                    </td>
                   </tr>
                 <?php } 
               }
             ?>                
             </tbody>
         </table>
-        <?php 
+        <?php
+            // Bad Apprach to delete
+            /*
             if(isset($_GET['del'])){
                 $user_id = $_GET['del'];
+                $sql  = "DELETE FROM users WHERE user_id = ?";                
+                $stmt = mysqli_stmt_init($conn);                
+                if(!mysqli_stmt_prepare($stmt,$sql)){
+                    die("Fail to delete from Database" . mysqli_connect_error());
+                }else{                                  
+                    mysqli_stmt_bind_param($stmt,'i', $user_id);
+                    mysqli_stmt_execute($stmt);
+                    header('location:index.php');     
+                }
+            }
+            */ 
+            // Good Apprach to delete
+            if(isset($_POST['remove'])){
+                $user_id = $_POST['user_id'];
                 $sql  = "DELETE FROM users WHERE user_id = ?";                
                 $stmt = mysqli_stmt_init($conn);                
                 if(!mysqli_stmt_prepare($stmt,$sql)){
